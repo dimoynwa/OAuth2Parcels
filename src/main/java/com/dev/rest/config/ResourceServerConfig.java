@@ -7,6 +7,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 public class ResourceServerConfig extends WebSecurityConfigurerAdapter {
@@ -17,7 +18,10 @@ public class ResourceServerConfig extends WebSecurityConfigurerAdapter {
     
     @Autowired
     private UserDetailsService userService;
-
+    
+    @Autowired
+    private PasswordEncoder passEncoder;
+    
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
@@ -36,7 +40,7 @@ public class ResourceServerConfig extends WebSecurityConfigurerAdapter {
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 
         auth.parentAuthenticationManager(authenticationManager)
-                .userDetailsService(userService);
+                .userDetailsService(userService).passwordEncoder(passEncoder);
     }
      
 }
