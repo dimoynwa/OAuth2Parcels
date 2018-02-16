@@ -11,6 +11,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,6 +41,9 @@ public class UserServiceImpl implements UserService, UserDetailsService{
 	@Autowired
 	private ParcelRepository parcelRepository;
 	
+	@Autowired
+	private PasswordEncoder passEncoder;
+	
 	@Override
 	public List<UserDTO> getAllUsers() {
 		List<User> result = userRepository.findAll();
@@ -54,6 +59,7 @@ public class UserServiceImpl implements UserService, UserDetailsService{
 	public UserDTO createUser(UserDTO body, UserRole role) {
 		User user = body.createNewUser();
 		user.setRole(role);
+		user.setPassword(passEncoder.encode(user.getPassword()));
 		user = userRepository.save(user);
 		return user.toGeneralInfoDTO();
 	}
